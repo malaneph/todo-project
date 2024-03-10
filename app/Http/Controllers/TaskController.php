@@ -7,9 +7,16 @@ use App\Models\Task;
 
 class TaskController extends Controller
 {
-    public function index()
-    {
-        $tasks = Task::all();
+    public function index(Request $request)
+    {   
+        $date_order = 'asc';
+        if($request->has('date_order')) {
+            $date_order = $request->date_order;
+        }
+        if($request->has('status')) {
+            $tasks = Task::where('status', $request->status)->orderBy('created_at', $date_order)->get();
+        }
+        else $tasks = Task::orderBy('created_at', $date_order)->get();
 
         return response()->json([
             'tasks' => $tasks
